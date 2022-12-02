@@ -55,7 +55,7 @@ You can access the MinIO Console at https://localhost:9001. Login using the user
 ### Step 8 - Access the Adminer PostgreSQL database management
 You can access the Adminer PostgreSQL database management at https://localhost:8080. Login using the username and password from the `POSTGRESQL_USER` and `POSTGRESQL_PASSWORD` environment variables.
 
-![Django polls app](docs/adminer.png)
+![Adminer](docs/adminer.png)
 
 ### Step 9 - Stop Tilt
 Tilt will remove the Helm charts, secrets and the Django application from the local Kubernetes cluster.
