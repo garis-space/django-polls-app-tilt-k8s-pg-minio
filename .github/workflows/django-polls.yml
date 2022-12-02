@@ -21,7 +21,7 @@ env:
   MINIO_ROOT_PASSWORD: minio-password
   MINIO_STORAGE_ENDPOINT: localhost:9000
   MINIO_STORAGE_ACCESS_KEY: minio
-  MINIO_STORAGE_SECRET_KEY: minio-secret-key
+  MINIO_STORAGE_SECRET_KEY: minio-password
 
 defaults:
   run:
@@ -44,20 +44,19 @@ jobs:
 
       minio:
         image: minio/minio
-        ports:
-          - 9000:9000
-        volumes:
-          - data:/data
         env:
           MINIO_ROOT_USER: ${{ env.MINIO_ROOT_USER }}
           MINIO_ROOT_PASSWORD: ${{ env.MINIO_ROOT_PASSWORD }}
-          MINIO_ACCESS_KEY: ${{ env.MINIO_STORAGE_ACCESS_KEY }}
-          MINIO_SECRET_KEY: ${{ env.MINIO_STORAGE_SECRET_KEY }}
+        ports:
+          - 9000:9000
         options: >-
+          server /data
+          --console-address ":9001"
           --health-cmd "curl -f http://localhost:9000/minio/health/live"
-          --health-interval 30s
-          --health-timeout 15s
+          --health-interval 10s
+          --health-timeout 5s
           --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
