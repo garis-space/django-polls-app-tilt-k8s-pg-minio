@@ -46,7 +46,11 @@ jobs:
         image: minio/minio
         ports:
           - 9000:9000
+        volumes:
+          - data:/data
         env:
+          MINIO_ROOT_USER: ${{ env.MINIO_ROOT_USER }}
+          MINIO_ROOT_PASSWORD: ${{ env.MINIO_ROOT_PASSWORD }}
           MINIO_ACCESS_KEY: ${{ env.MINIO_STORAGE_ACCESS_KEY }}
           MINIO_SECRET_KEY: ${{ env.MINIO_STORAGE_SECRET_KEY }}
         options: >-
