@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-polls
+  labels:
+    app: django-polls
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: django-polls
+  template:
+    metadata:
+      labels:
+        app: django-polls
+    spec:
+      initContainers:
+        # Run migrations before starting the app
+        - name: django-polls-migrate
+          image: app/django-polls:latest
+          args:
+            - migrate
+          envFrom:
+            - secretRef:
+                name: django-polls
+        # Run collectstatic before starting the app
+        - name: django-polls-collectstatic
+          image: app/django-polls:latest
+          args:
+            - collectstatic
+          envFrom:
+            - secretRef:
+                name: django-polls
+      containers:
+        - name: django-polls-app
+          image: app/django-polls:latest
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: django-polls

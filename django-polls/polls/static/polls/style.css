@@ -1,0 +1,13 @@
+body {
+    background: white url("images/background.png") no-repeat;
+    color: #fff;
+}
+
+a {
+    color: #fff;
+}
+
+button {
+    background: #fff;
+    color: #000;
+}

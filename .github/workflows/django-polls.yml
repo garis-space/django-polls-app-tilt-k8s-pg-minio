@@ -1,0 +1,123 @@
+name: Django polls
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+
+env:
+  POSTGRESQL_DB: github-actions
+  POSTGRESQL_USER: postgres
+  POSTGRESQL_PASSWORD: postgres
+  POSTGRESQL_HOST: localhost
+  POSTGRESQL_PORT: 5432
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./django-polls
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: ${{ env.POSTGRESQL_DB }}
+          POSTGRES_USER: ${{ env.POSTGRESQL_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+
+      - name: Check Python version
+        run: python --version
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run migrations
+        run: |
+          python manage.py migrate
+
+      - name: Run Tests
+        run: |
+          pip install coverage
+          coverage run manage.py test
+
+      - name: Run Coverage Report
+        run: |
+          coverage report
+
+  lint-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+
+      - name: Check Python version
+        run: python --version
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run Linting
+        run: |
+          flake8 .
+
+      - name: Run Formatter
+        run: |
+          black --check .
+
+      - name: Run Type Checker
+        run: |
+          mypy .
+
+      - name: Run Security Checker
+        run: |
+          bandit -r .
+
+      - name: Run Code Complexity
+        run: |
+          radon cc .
+
+      - name: Run Code Maintainability
+        run: |
+          radon mi .
+
+      - name: Run Code Duplication
+        run: |
+          radon raw .
+
+      - name: Run check for sorting imports
+        run: |
+          isort --check-only --diff .
+
+      - name: Run checks Python dependencies for known security vulnerabilities
+        run: |
+          safety check
