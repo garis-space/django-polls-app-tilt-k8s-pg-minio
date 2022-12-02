@@ -28,13 +28,13 @@ cd django-polls-app-tilt-k8s-pg-minio
 
 # Environment variables (edit as needed)
 cp .env.example .env
+```
 
+When you run `tilt up` for the first time, Tilt will read .env file, set the environment variables and create secrets in the cluster for the Django app, PostgreSQL and minIO, then install Helm charts for PostgreSQL (with simple [adminer database management](https://www.adminer.org/)), MinIO (with init buckets) and deploy the Django application (migrations and collectstatic will be run automatically) using previously created secrets to the local Kubernetes cluster. This will take a few minutes. Subsequent runs of `tilt up` will be much faster.
+
+```bash
 # Start Tilt
 tilt up
-
-# Tilt will read .env file, set the environment variables and create secrets in the cluster for the Django app, PostgreSQL and minIO.
-
-# Tilt will then install Helm charts for PostgreSQL (with simple [adminer database management](https://www.adminer.org/)), MinIO (with init buckets) and deploy the Django application (migrations and collectstatic will be run automatically) using previously created secrets to the local Kubernetes cluster.
 ```
 
 ### Step 5 - Create a new superuser
@@ -58,7 +58,7 @@ You can access the Adminer PostgreSQL database management at https://localhost:8
 ![Django polls app](docs/adminer.png)
 
 ### Step 9 - Stop Tilt
+Tilt will remove the Helm charts, secrets and the Django application from the local Kubernetes cluster.
 ```bash
-# Tilt will remove the Helm charts, secrets and the Django application from the local Kubernetes cluster.
 tilt down
 ```
