@@ -17,12 +17,6 @@ env:
   POSTGRESQL_HOST: localhost
   POSTGRESQL_PORT: 5432
 
-  MINIO_ROOT_USER: minio
-  MINIO_ROOT_PASSWORD: minio-password
-  MINIO_STORAGE_ENDPOINT: localhost:9000
-  MINIO_STORAGE_ACCESS_KEY: minio
-  MINIO_STORAGE_SECRET_KEY: minio-secret-key
-
 defaults:
   run:
     shell: bash
@@ -41,19 +35,6 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-      minio:
-        image: minio/minio
-        ports:
-          - 9000:9000
-        env:
-          MINIO_ACCESS_KEY: ${{ env.MINIO_STORAGE_ACCESS_KEY }}
-          MINIO_SECRET_KEY: ${{ env.MINIO_STORAGE_SECRET_KEY }}
-        options: >-
-          --health-cmd "curl -f http://localhost:9000/minio/health/live"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v3

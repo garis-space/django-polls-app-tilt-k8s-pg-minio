@@ -121,29 +121,33 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-# configure minio as static files storage
-STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
+# Add contition that if Github CI do not use minio storage
+if os.getenv("GITHUB_ACTIONS") != "true":
+    # configure minio as static files storage
+    STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
 
-# configure minio as media files storage
-DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+    # configure minio as media files storage
+    DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
 
-# minio settings
-MINIO_STORAGE_ENDPOINT = os.getenv("MINIO_STORAGE_ENDPOINT")
-MINIO_STORAGE_ACCESS_KEY = os.getenv("MINIO_STORAGE_ACCESS_KEY")
-MINIO_STORAGE_SECRET_KEY = os.getenv("MINIO_STORAGE_SECRET_KEY")
-MINIO_STORAGE_USE_HTTPS = os.getenv("MINIO_STORAGE_USE_HTTPS", "False") == "True"
-MINIO_STORAGE_MEDIA_BUCKET_NAME = os.getenv("MINIO_STORAGE_MEDIA_BUCKET_NAME", "media")
-MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
-MINIO_STORAGE_STATIC_BUCKET_NAME = os.getenv(
-    "MINIO_STORAGE_STATIC_BUCKET_NAME", "static"
-)
-MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
-MINIO_STORAGE_MEDIA_URL = os.getenv(
-    "MINIO_STORAGE_MEDIA_URL", "http://localhost:9000/media/"
-)
-MINIO_STORAGE_STATIC_URL = os.getenv(
-    "MINIO_STORAGE_STATIC_URL", "http://localhost:9000/static/"
-)
+    # minio settings
+    MINIO_STORAGE_ENDPOINT = os.getenv("MINIO_STORAGE_ENDPOINT")
+    MINIO_STORAGE_ACCESS_KEY = os.getenv("MINIO_STORAGE_ACCESS_KEY")
+    MINIO_STORAGE_SECRET_KEY = os.getenv("MINIO_STORAGE_SECRET_KEY")
+    MINIO_STORAGE_USE_HTTPS = os.getenv("MINIO_STORAGE_USE_HTTPS", "False") == "True"
+    MINIO_STORAGE_MEDIA_BUCKET_NAME = os.getenv(
+        "MINIO_STORAGE_MEDIA_BUCKET_NAME", "media"
+    )
+    MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+    MINIO_STORAGE_STATIC_BUCKET_NAME = os.getenv(
+        "MINIO_STORAGE_STATIC_BUCKET_NAME", "static"
+    )
+    MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
+    MINIO_STORAGE_MEDIA_URL = os.getenv(
+        "MINIO_STORAGE_MEDIA_URL", "http://localhost:9000/media/"
+    )
+    MINIO_STORAGE_STATIC_URL = os.getenv(
+        "MINIO_STORAGE_STATIC_URL", "http://localhost:9000/static/"
+    )
 
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
